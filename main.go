@@ -87,9 +87,17 @@ func main() {
 			continue
 		}
 
+		outputObj := make(map[string]any)
+		err = json.Unmarshal([]byte(success.Output), &outputObj)
+		if err != nil {
+			logrus.Errorf("❌ Failed to unmarshal output: %v", err)
+			file.Close()
+			continue
+		}
+
 		enc := json.NewEncoder(file)
 		enc.SetIndent("", "  ")
-		if err := enc.Encode(success.Output); err != nil {
+		if err := enc.Encode(outputObj); err != nil {
 			file.Close()
 			logrus.Errorf("❌ Failed to write to file: %v", err)
 			continue
